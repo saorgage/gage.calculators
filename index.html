@@ -270,7 +270,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
         <button class="btn btn-ghost" onclick="showPanel('about')">About me</button>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-val">12</div><div class="hstat-label">Free tools</div></div>
+        <div class="hstat"><div class="hstat-val">13</div><div class="hstat-label">Free tools</div></div>
         <div class="hstat"><div class="hstat-val">0</div><div class="hstat-label">Sign-ups needed</div></div>
         <div class="hstat"><div class="hstat-val">100%</div><div class="hstat-label">Free, always</div></div>
       </div>
@@ -293,6 +293,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
   <button class="mob-btn" onclick="showTool('emergency')">🛡️ Emergency</button>
   <button class="mob-btn" onclick="showTool('pension')">🎯 Pension</button>
   <button class="mob-btn" onclick="showTool('cspension')">🏛️ CS Pension</button>
+  <button class="mob-btn" onclick="showTool('deferred')">⏳ CS Deferred</button>
   <button class="mob-btn" onclick="showTool('sacrifice')">💼 Sacrifice</button>
   <button class="mob-btn" onclick="showTool('budget')">📊 Budget</button>
 </div>
@@ -322,6 +323,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
     <div class="sg-label">Long Term</div>
     <button class="sb-btn" id="sb-pension" onclick="showTool('pension')"><span class="sb-icon">🎯</span>Pension Planner</button>
     <button class="sb-btn" id="sb-cspension" onclick="showTool('cspension')"><span class="sb-icon">🏛️</span>Civil Service Pension</button>
+    <button class="sb-btn" id="sb-deferred" onclick="showTool('deferred')"><span class="sb-icon">⏳</span>CS Deferred Pension</button>
     <div class="sb-divider"></div>
     <button class="sb-btn" onclick="showPanel('about')" style="margin-top:2px"><span class="sb-icon">👤</span>About Chris</button>
     <button class="sb-btn" onclick="showPanel('blog')"><span class="sb-icon">📝</span>Blog & Tips</button>
@@ -715,48 +717,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
       </div>
 
 
-      <!-- ADVANCED: DEFERRED PENSION SCENARIO -->
-      <div class="card" style="margin-top:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="toggleDeferred()">
-          <div>
-            <div class="card-title" style="margin-bottom:2px">⚙️ Advanced: Deferred Pension Scenario</div>
-            <div style="font-size:.8rem;color:var(--grey)">Model leaving the Civil Service before retirement — e.g. leaving at 42, drawing pension at 67</div>
-          </div>
-          <span id="deferred-chevron" style="color:var(--teal);font-size:.85rem;transition:transform .25s;flex-shrink:0;margin-left:12px">▼</span>
-        </div>
-        <div id="deferred-body" style="display:none;margin-top:20px">
-          <div class="hbox hbox-blue" style="margin-bottom:18px;font-size:.82rem">
-            When you leave the Civil Service before retirement age, your pension is <strong>preserved (deferred)</strong>. It gets revalued each year by CPI inflation until you draw it. This tool shows what that pension will be worth at various draw-down ages, and compares drawing early vs waiting.
-          </div>
-          <div class="g2">
-            <div>
-              <div class="field"><label>Age You Will Leave CS</label><input type="number" id="def-leave-age" value="42" min="16" max="80" oninput="calcDeferred()"></div>
-              <div class="field"><label>Pension Accrued at Leaving (£/yr) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">from your benefit statement, or use the main calc above</span></label><input type="number" id="def-pension-at-leaving" value="8000" min="0" oninput="calcDeferred()"></div>
-              <div class="field"><label>Assumed Annual CPI Revaluation (%)</label><input type="number" id="def-cpi" value="2.5" step="0.25" min="0" max="10" oninput="calcDeferred()">
-                <div style="font-size:.72rem;color:var(--grey);margin-top:4px">Alpha revalues by CPI. Classic/Premium revalues by CPI (max 5%). Long-run UK CPI average is roughly 2–3%.</div>
-              </div>
-              <div class="field"><label>Age You Plan to Draw the Pension</label><input type="number" id="def-draw-age" value="67" min="55" max="80" oninput="calcDeferred()"></div>
-              <div class="field"><label>Scheme Normal Pension Age <span id="def-npa-source" style="font-size:.7rem;color:var(--teal);text-transform:none;letter-spacing:0;font-weight:400"></span></label><input type="number" id="def-npa" value="67" min="55" max="70" oninput="calcDeferred()"></div>
-              <div class="field"><label>Early Retirement Reduction (% per yr before NPA) <span id="def-factor-source" style="font-size:.7rem;color:var(--teal);text-transform:none;letter-spacing:0;font-weight:400"></span></label><input type="number" id="def-early-factor" value="5" step="0.5" min="0" max="10" oninput="calcDeferred()"></div>
-              <div class="field"><label>Include State Pension at 67?</label><select id="def-state" onchange="calcDeferred()"><option value="yes">Yes (~£11,502/yr)</option><option value="no">No</option></select></div>
-            </div>
-            <div>
-              <div class="card" style="background:rgba(0,180,160,.05);border-color:rgba(0,180,160,.2);margin-bottom:16px">
-                <div class="card-title">Deferred Pension at Draw Age</div>
-                <div id="def-results"></div>
-              </div>
-              <div class="card" style="background:rgba(155,127,232,.05);border-color:rgba(155,127,232,.2)">
-                <div class="card-title">Draw Age Comparison</div>
-                <div id="def-scenarios"></div>
-              </div>
-            </div>
-          </div>
-          <div class="chart-wrap" style="height:260px;margin-top:16px"><canvas id="deferredChart"></canvas></div>
-          <div style="font-size:.72rem;color:var(--grey);margin-top:8px;text-align:center">Pension value at different draw ages — shows revaluation growth vs early retirement reduction</div>
-          <div class="export-bar" style="margin-top:14px"><button class="btn-excel" onclick="exportDeferred()">⬇ Export to CSV/Excel</button></div>
-        </div>
-      </div>
-
       <div class="export-bar"><button class="btn-excel" onclick="exportCSPension()">⬇ Export to CSV/Excel</button></div>
       <div class="card"><div class="card-title">Pension Income Growth</div><div class="chart-wrap" style="height:280px"><canvas id="csChart"></canvas></div></div>
 
@@ -878,6 +838,72 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
 
     </div>
 
+
+    <!-- DEFERRED CS PENSION -->
+    <div class="panel" id="panel-deferred">
+      <div class="panel-heading">CS Deferred Pension Calculator</div>
+      <p class="panel-sub">Left or planning to leave the Civil Service before retirement? See what your preserved pension will be worth when you eventually draw it.</p>
+
+      <div class="hbox hbox-blue" style="margin-bottom:22px;font-size:.875rem">
+        When you leave the Civil Service before retirement age your pension is <strong>preserved (deferred)</strong> rather than lost. It gets revalued each year by CPI inflation from the date you leave until the date you draw it. This calculator shows what that pension will be worth at different draw ages, how early retirement reductions affect it, and helps you decide the best time to draw.
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Your Details</div>
+          <div class="card-sub">Enter your scheme and the pension you'll have at the point you leave.</div>
+
+          <div class="field"><label>CS Pension Scheme</label>
+            <select id="def-scheme" onchange="syncDeferredScheme()">
+              <option value="alpha">Alpha (post-April 2015)</option>
+              <option value="nuvos">Nuvos (2007–2015)</option>
+              <option value="classic">Classic (pre-2002)</option>
+              <option value="classic_plus">Classic Plus (2002–2007)</option>
+              <option value="premium">Premium (2002–2007)</option>
+            </select>
+          </div>
+          <div class="field"><label>Current Age</label><input type="number" id="def-current-age" value="39" min="16" max="80" oninput="calcDeferred()"></div>
+          <div class="field"><label>Age You Will Leave CS</label><input type="number" id="def-leave-age" value="42" min="16" max="80" oninput="calcDeferred()"></div>
+          <div class="field"><label>Pension Accrued at Leaving (£/yr) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">from your benefit statement</span></label><input type="number" id="def-pension-at-leaving" value="8000" min="0" oninput="calcDeferred()"></div>
+          <div class="field"><label>Assumed Annual CPI Revaluation (%)</label>
+            <input type="number" id="def-cpi" value="2.5" step="0.25" min="0" max="10" oninput="calcDeferred()">
+            <div style="font-size:.72rem;color:var(--grey);margin-top:4px">Alpha revalues by CPI. Classic/Premium by CPI capped at 5%. Long-run UK CPI average is roughly 2–3%.</div>
+          </div>
+          <div class="field"><label>Age You Plan to Draw the Pension</label><input type="number" id="def-draw-age" value="67" min="55" max="80" oninput="calcDeferred()"></div>
+          <div class="field"><label>Normal Pension Age <span id="def-npa-source" style="font-size:.7rem;color:var(--teal);text-transform:none;letter-spacing:0;font-weight:400">— auto-filled from scheme</span></label>
+            <input type="number" id="def-npa" value="67" min="55" max="70" oninput="calcDeferred()"></div>
+          <div class="field"><label>Early Retirement Reduction (% per yr before NPA) <span id="def-factor-source" style="font-size:.7rem;color:var(--teal);text-transform:none;letter-spacing:0;font-weight:400">— auto-filled from scheme</span></label>
+            <input type="number" id="def-early-factor" value="5" step="0.5" min="0" max="10" oninput="calcDeferred()"></div>
+          <div class="field"><label>Include State Pension at 67?</label>
+            <select id="def-state" onchange="calcDeferred()"><option value="yes">Yes (~£11,502/yr)</option><option value="no">No</option></select></div>
+        </div>
+
+        <div>
+          <div class="card" style="background:rgba(0,180,160,.05);border-color:rgba(0,180,160,.2);margin-bottom:18px">
+            <div class="card-title">Deferred Pension at Draw Age</div>
+            <div id="def-results"></div>
+          </div>
+          <div class="card" style="background:rgba(155,127,232,.05);border-color:rgba(155,127,232,.2)">
+            <div class="card-title">Draw Age Comparison</div>
+            <div id="def-scenarios"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="export-bar"><button class="btn-excel" onclick="exportDeferred()">⬇ Export to CSV/Excel</button></div>
+      <div class="card">
+        <div class="card-title">Pension Value by Draw Age</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="deferredChart"></canvas></div>
+        <div style="font-size:.72rem;color:var(--grey);margin-top:8px">Solid line = total income at that draw age. Dashed = revalued CS pension before any early reduction.</div>
+      </div>
+
+      <div class="hbox hbox-blue" style="margin-top:18px;font-size:.82rem">
+        <strong>Important:</strong> Your actual deferred pension value is recorded on your preserved benefit statement from MyCSP (mypension.civilservice.gov.uk). Contact your former employer's HR team if you haven't received one. Figures here are illustrative estimates only.
+      </div>
+
+      <div class="disc"><strong>Disclaimer:</strong> Estimates only. CPI rates assumed constant — actual revaluation varies annually. Not financial advice.</div>
+    </div>
+
   </div><!-- end panels -->
 </div><!-- end main wrap -->
 
@@ -898,7 +924,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
 // ═══════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════
-const TOOLS = ['debt','invest','scot-tax','uk-tax','savings','mortgage','rentvbuy','emergency','pension','sacrifice','cspension','budget'];
+const TOOLS = ['debt','invest','scot-tax','uk-tax','savings','mortgage','rentvbuy','emergency','pension','sacrifice','cspension','budget','deferred'];
 
 function showPanel(name) {
   // hide/show hero
@@ -1694,8 +1720,13 @@ let deferredChart = null;
 
 
 function syncDeferredFromScheme() {
-  // Auto-populate deferred section NPA and early factor from the selected scheme
-  const schemeEl = document.getElementById('cs-scheme');
+  // Called from CS pension main calc — no longer needed to sync separately
+  syncDeferredScheme();
+}
+
+function syncDeferredScheme() {
+  // Get scheme from deferred panel's own dropdown
+  const schemeEl = document.getElementById('def-scheme');
   if (!schemeEl) return;
   const s = CS_SCHEMES[schemeEl.value];
   if (!s) return;
@@ -1705,27 +1736,17 @@ function syncDeferredFromScheme() {
   const factorSource = document.getElementById('def-factor-source');
   if (npaEl) {
     npaEl.value = s.npa;
-    if (npaSource) npaSource.textContent = '— auto-filled from ' + s.name + ' scheme';
+    if (npaSource) npaSource.textContent = '— ' + s.name + ': NPA ' + s.npa;
   }
   if (factorEl) {
     factorEl.value = (s.earlyFactor * 100).toFixed(1);
-    if (factorSource) factorSource.textContent = '— auto-filled from ' + s.name + ' scheme';
+    if (factorSource) factorSource.textContent = '— ' + s.name + ': ' + (s.earlyFactor*100).toFixed(1) + '% per yr';
   }
-  // Also update draw age default to match NPA if user hasn't changed it
   const drawEl = document.getElementById('def-draw-age');
   if (drawEl && (+drawEl.value === 67 || +drawEl.value === 65 || +drawEl.value === 60)) {
     drawEl.value = s.npa;
   }
   calcDeferred();
-}
-
-function toggleDeferred() {
-  const body = document.getElementById('deferred-body');
-  const chev = document.getElementById('deferred-chevron');
-  const open = body.style.display === 'none';
-  body.style.display = open ? 'block' : 'none';
-  chev.style.transform = open ? 'rotate(180deg)' : '';
-  if (open) calcDeferred();
 }
 
 function calcDeferred() {
@@ -2475,7 +2496,8 @@ calcEmergency();
 calcPension();
 calcSacrifice();
 calcCSPension();
-syncDeferredFromScheme();
+syncDeferredScheme();
+calcDeferred();
 calcBudget();
 </script>
 </body>
