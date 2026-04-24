@@ -1116,24 +1116,39 @@ function taxCodeAllowance(code) {
 }
 
 function calcBands(gross, bands, overrideAllowance = null) {
+  // Determine personal allowance
   let allowance;
   if (overrideAllowance !== null) {
-    allowance = overrideAllowance < 0 ? 0 : overrideAllowance; // K codes handled separately
+    allowance = overrideAllowance < 0 ? 0 : overrideAllowance;
   } else {
     allowance = gross>125140?0:gross>100000?Math.max(0,12570-(gross-100000)/2):12570;
   }
-  const taxable = Math.max(0, gross-allowance);
-  let rem=taxable, tax=0;
-  const bd=[];
-  for(const b of bands){
-    if(rem<=0){bd.push({...b,paid:0,slice:0});continue;}
-    const width=b.to===Infinity?rem:b.to-b.from+1;
-    const slice=Math.min(rem,Math.max(0,width));
-    const paid=slice*b.rate;
-    tax+=paid; rem-=slice;
-    bd.push({...b,paid,slice});
+
+  // Taxable income = gross minus allowance (minimum 0)
+  const taxable = Math.max(0, gross - allowance);
+
+  // Bands are defined as absolute salary thresholds (e.g. Starter: 12570–14876)
+  // We need to work out how much of our TAXABLE income falls in each band.
+  // Taxable income starts where the personal allowance ends.
+  // The first band starts at the standard personal allowance (12570) in the band definitions.
+  // If our actual allowance differs, we shift all band boundaries relative to it.
+  const standardAllowance = 12570;
+  const allowanceShift = allowance - standardAllowance; // positive = higher allowance, negative = lower
+
+  let rem = taxable, tax = 0;
+  const bd = [];
+  for (const b of bands) {
+    if (rem <= 0) { bd.push({...b, paid:0, slice:0}); continue; }
+    // Adjust band thresholds by the allowance shift
+    const adjFrom = b.from + allowanceShift;
+    const adjTo   = b.to === Infinity ? Infinity : b.to + allowanceShift;
+    const width   = adjTo === Infinity ? rem : Math.max(0, adjTo - adjFrom + 1);
+    const slice   = Math.min(rem, width);
+    const paid    = slice * b.rate;
+    tax += paid; rem -= slice;
+    bd.push({...b, paid, slice});
   }
-  return {tax,bd,taxable,allowance};
+  return {tax, bd, taxable, allowance};
 }
 function calcNI(g){const lo=12570,hi=50270;if(g<=lo)return 0;return Math.min(g,hi)*0.08-lo*0.08+Math.max(0,g-hi)*0.02;}
 function sLoan(g,p){const th={plan1:24990,plan2:27295,plan4:31395};if(!th[p]||g<=th[p])return 0;return(g-th[p])*.09;}
@@ -1987,9 +2002,10 @@ function exportTax(region) {
   const loan=sLoan(tg,document.getElementById(prefix+'-loan').value);
   const ni=calcNI(tg);
   const bands=region==='scot'?SCOT_BANDS:UK_BANDS;
-  const taxR=calcBands(tg,bands);
-  const take=gross-taxR.tax-ni-loan-pen-postTax;
   const tcExport = document.getElementById(prefix+'-taxcode') ? document.getElementById(prefix+'-taxcode').value.trim().toUpperCase() : '';
+  const tcOverride = taxCodeAllowance(tcExport);
+  const taxR=calcBands(tg,bands,tcOverride);
+  const take=gross-taxR.tax-ni-loan-pen-postTax;
   const rows=[
     ['Chris Gage Finance Tools – '+(region==='scot'?'Scottish':'UK')+' Tax Export'],
     [],
