@@ -270,7 +270,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
         <button class="btn btn-ghost" onclick="showPanel('about')">About me</button>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-val">13</div><div class="hstat-label">Free tools</div></div>
+        <div class="hstat"><div class="hstat-val">15</div><div class="hstat-label">Free tools</div></div>
         <div class="hstat"><div class="hstat-val">0</div><div class="hstat-label">Sign-ups needed</div></div>
         <div class="hstat"><div class="hstat-val">100%</div><div class="hstat-label">Free, always</div></div>
       </div>
@@ -287,9 +287,11 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
   <button class="mob-btn" onclick="showTool('invest')">📈 Invest</button>
   <button class="mob-btn" onclick="showTool('scot-tax')">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scot Tax</button>
   <button class="mob-btn" onclick="showTool('uk-tax')">🇬🇧 UK Tax</button>
+  <button class="mob-btn" onclick="showTool('cgt')">📉 CGT</button>
   <button class="mob-btn" onclick="showTool('savings')">🏦 Savings</button>
   <button class="mob-btn" onclick="showTool('mortgage')">🏠 Mortgage</button>
   <button class="mob-btn" onclick="showTool('rentvbuy')">⚖️ Rent vs Buy</button>
+  <button class="mob-btn" onclick="showTool('overpay')">💸 Overpay</button>
   <button class="mob-btn" onclick="showTool('emergency')">🛡️ Emergency</button>
   <button class="mob-btn" onclick="showTool('pension')">🎯 Pension</button>
   <button class="mob-btn" onclick="showTool('cspension')">🏛️ CS Pension</button>
@@ -310,6 +312,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
     <div class="sg-label">Tax</div>
     <button class="sb-btn" id="sb-scot-tax" onclick="showTool('scot-tax')"><span class="sb-icon">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span>Scottish Tax</button>
     <button class="sb-btn" id="sb-uk-tax" onclick="showTool('uk-tax')"><span class="sb-icon">🇬🇧</span>UK Tax</button>
+    <button class="sb-btn" id="sb-cgt" onclick="showTool('cgt')"><span class="sb-icon">📉</span>Capital Gains Tax</button>
     <div class="sb-divider"></div>
     <div class="sg-label">Saving & Investing</div>
     <button class="sb-btn" id="sb-invest" onclick="showTool('invest')"><span class="sb-icon">📈</span>Investment Growth</button>
@@ -319,6 +322,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
     <div class="sg-label">Property</div>
     <button class="sb-btn" id="sb-mortgage" onclick="showTool('mortgage')"><span class="sb-icon">🏠</span>Mortgage</button>
     <button class="sb-btn" id="sb-rentvbuy" onclick="showTool('rentvbuy')"><span class="sb-icon">⚖️</span>Rent vs Buy</button>
+    <button class="sb-btn" id="sb-overpay" onclick="showTool('overpay')"><span class="sb-icon">💸</span>Mortgage Overpayment</button>
     <div class="sb-divider"></div>
     <div class="sg-label">Long Term</div>
     <button class="sb-btn" id="sb-pension" onclick="showTool('pension')"><span class="sb-icon">🎯</span>Pension Planner</button>
@@ -456,6 +460,13 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
           <div class="field"><label>Dividend Yield (%)</label><input type="number" id="iv-div" value="3" step="0.1" oninput="calcInvest()"></div>
           <div class="field"><label>Reinvest Dividends?</label><select id="iv-reinvest" onchange="calcInvest()"><option value="yes">Yes</option><option value="no">No – take as income</option></select></div>
           <div class="field"><label>Time Horizon (years)</label><input type="range" id="iv-years" min="1" max="40" value="20" oninput="calcInvest()"><div class="range-row"><span>1yr</span><span class="range-val" id="iv-years-lbl">20yr</span><span>40yr</span></div></div>
+          <div class="field"><label>Show Real Terms? <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">adjust for inflation to today's pounds</span></label>
+            <select id="iv-real" onchange="calcInvest()">
+              <option value="no">No (nominal pounds)</option>
+              <option value="yes">Yes (today's pounds)</option>
+            </select>
+          </div>
+          <div class="field"><label>Inflation Rate (% p.a.)</label><input type="number" id="iv-inflation" value="2.5" step="0.25" min="0" max="20" oninput="calcInvest()"></div>
         </div>
         <div>
           <div class="card" style="margin-bottom:18px"><div class="card-title">Outcome</div><div id="iv-stats"></div></div>
@@ -475,6 +486,18 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
         <div class="card">
           <div class="card-title">Your Income</div>
           <div class="field"><label>Gross Annual Salary (£)</label><input type="number" id="st-salary" value="42000" oninput="calcScotTax()"></div>
+          <div class="field"><label>Tax Year</label>
+            <select id="st-year" onchange="calcScotTax()">
+              <option value="2025_26" selected>2025/26</option>
+              <option value="2024_25">2024/25</option>
+            </select>
+          </div>
+          <div class="field"><label>Employment Type</label>
+            <select id="st-employment" onchange="calcScotTax()">
+              <option value="employed" selected>Employed (PAYE)</option>
+              <option value="self">Self-Employed (Class 4 NI)</option>
+            </select>
+          </div>
           <div class="field"><label>Pension Contribution (%)</label><input type="number" id="st-pension" value="5" step="0.5" oninput="calcScotTax()"></div>
           <div class="field"><label>Student Loan</label><select id="st-loan" onchange="calcScotTax()"><option value="none">None</option><option value="plan1">Plan 1</option><option value="plan2">Plan 2</option><option value="plan4">Plan 4 (Scottish)</option></select></div>
           <div class="field"><label id="st-pretax-lbl">Pre-Tax Deductions (£/yr) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">e.g. extra pension, cycle to work</span></label><input type="number" id="st-pretax" value="0" min="0" oninput="calcScotTax()"></div>
@@ -501,6 +524,18 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
         <div class="card">
           <div class="card-title">Your Income</div>
           <div class="field"><label>Gross Annual Salary (£)</label><input type="number" id="ut-salary" value="42000" oninput="calcUKTax()"></div>
+          <div class="field"><label>Tax Year</label>
+            <select id="ut-year" onchange="calcUKTax()">
+              <option value="2025_26" selected>2025/26</option>
+              <option value="2024_25">2024/25</option>
+            </select>
+          </div>
+          <div class="field"><label>Employment Type</label>
+            <select id="ut-employment" onchange="calcUKTax()">
+              <option value="employed" selected>Employed (PAYE)</option>
+              <option value="self">Self-Employed (Class 4 NI)</option>
+            </select>
+          </div>
           <div class="field"><label>Pension Contribution (%)</label><input type="number" id="ut-pension" value="5" step="0.5" oninput="calcUKTax()"></div>
           <div class="field"><label>Student Loan</label><select id="ut-loan" onchange="calcUKTax()"><option value="none">None</option><option value="plan1">Plan 1</option><option value="plan2">Plan 2</option></select></div>
           <div class="field"><label id="ut-pretax-lbl">Pre-Tax Deductions (£/yr) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">e.g. extra pension, cycle to work</span></label><input type="number" id="ut-pretax" value="0" min="0" oninput="calcUKTax()"></div>
@@ -552,6 +587,25 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
           <div class="field"><label>Term (years)</label><input type="range" id="mg-term" min="5" max="35" value="25" oninput="calcMortgage()"><div class="range-row"><span>5yr</span><span class="range-val" id="mg-term-lbl">25yr</span><span>35yr</span></div></div>
           <div class="field"><label>Type</label><select id="mg-type" onchange="calcMortgage()"><option value="repayment">Repayment</option><option value="interest">Interest Only</option></select></div>
           <div class="field"><label>Annual Gross Salary (£)</label><input type="number" id="mg-salary" value="40000" oninput="calcMortgage()"></div>
+          <div class="field"><label>Region (for Stamp Duty / LBTT / LTT)</label>
+            <select id="mg-region" onchange="calcMortgage()">
+              <option value="scotland" selected>Scotland (LBTT)</option>
+              <option value="england">England / NI (Stamp Duty)</option>
+              <option value="wales">Wales (LTT)</option>
+            </select>
+          </div>
+          <div class="field"><label>First-Time Buyer?</label>
+            <select id="mg-ftb" onchange="calcMortgage()">
+              <option value="no">No</option>
+              <option value="yes">Yes (relief may apply)</option>
+            </select>
+          </div>
+          <div class="field"><label>Additional Property?</label>
+            <select id="mg-additional" onchange="calcMortgage()">
+              <option value="no">No</option>
+              <option value="yes">Yes (BTL / second home — surcharge applies)</option>
+            </select>
+          </div>
         </div>
         <div class="card"><div class="card-title">Results</div><div id="mg-results"></div></div>
       </div>
@@ -622,6 +676,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
           <div class="field"><label>Employer Contribution (£/month)</label><input type="number" id="pp-employer" value="150" oninput="calcPension()"></div>
           <div class="field"><label>Expected Growth Rate (%)</label><input type="number" id="pp-growth" value="6" step="0.5" oninput="calcPension()"></div>
           <div class="field"><label>Target Annual Retirement Income (£)</label><input type="number" id="pp-target-income" value="25000" oninput="calcPension()"></div>
+          <div class="field"><label>Show Real Terms? <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">in today's pounds</span></label>
+            <select id="pp-real" onchange="calcPension()"><option value="no">No (nominal)</option><option value="yes">Yes</option></select>
+          </div>
+          <div class="field"><label>Inflation Rate (% p.a.)</label><input type="number" id="pp-inflation" value="2.5" step="0.25" min="0" max="20" oninput="calcPension()"></div>
           <div class="field"><label>Include State Pension?</label><select id="pp-state" onchange="calcPension()"><option value="yes">Yes (~£11,502/yr)</option><option value="no">No</option></select></div>
           <div class="field"><label>Additional Pension / Civil Service (£/yr at retirement)</label><input type="number" id="pp-extra" value="0" min="0" oninput="calcPension()" placeholder="e.g. defined benefit / CS Alpha annual income"></div>
         </div>
@@ -904,6 +962,225 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
       <div class="disc"><strong>Disclaimer:</strong> Estimates only. CPI rates assumed constant — actual revaluation varies annually. Not financial advice.</div>
     </div>
 
+
+    <!-- CAPITAL GAINS TAX -->
+    <div class="panel" id="panel-cgt">
+      <div class="panel-heading">Capital Gains Tax Calculator</div>
+      <p class="panel-sub">Work out the tax owed on profits from selling shares, crypto, second properties, or other investments.</p>
+
+      <div class="hbox hbox-blue" style="margin-bottom:20px;font-size:.85rem">
+        <strong>How CGT works:</strong> When you sell an asset for more than you paid, the profit is a capital gain. You pay tax on the gain above your annual allowance (£3,000 for 2025/26). Rates depend on your income and the asset type. CGT rates and allowances are set by the UK government and apply across Scotland, England, Wales and Northern Ireland.
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">The Asset</div>
+          <div class="field"><label>Asset Type</label>
+            <select id="cgt-asset" onchange="calcCGT()">
+              <option value="shares">Shares / Funds / ETFs</option>
+              <option value="crypto">Cryptocurrency</option>
+              <option value="property">Residential Property (not main home)</option>
+              <option value="other">Other (gold, art, collectibles)</option>
+            </select>
+          </div>
+          <div class="field"><label>Purchase Price (£)</label><input type="number" id="cgt-buy" value="20000" min="0" oninput="calcCGT()"></div>
+          <div class="field"><label>Sale Price (£)</label><input type="number" id="cgt-sell" value="35000" min="0" oninput="calcCGT()"></div>
+          <div class="field"><label>Allowable Costs (£) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">legal fees, broker commissions, improvement costs</span></label><input type="number" id="cgt-costs" value="500" min="0" oninput="calcCGT()"></div>
+          <div class="field"><label>Other CGT Gains This Year (£) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">to combine multiple disposals</span></label><input type="number" id="cgt-other" value="0" min="0" oninput="calcCGT()"></div>
+          <div class="field"><label>Capital Losses to Offset (£)</label><input type="number" id="cgt-losses" value="0" min="0" oninput="calcCGT()"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Your Income & Year</div>
+          <div class="field"><label>Tax Year</label>
+            <select id="cgt-year" onchange="calcCGT()">
+              <option value="2025_26" selected>2025/26 (allowance £3,000)</option>
+              <option value="2024_25">2024/25 (allowance £3,000)</option>
+            </select>
+          </div>
+          <div class="field"><label>Your Total Taxable Income This Year (£) <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">salary minus pension contributions, before tax</span></label><input type="number" id="cgt-income" value="42000" min="0" oninput="calcCGT()"></div>
+          <div class="field"><label>Transfer to Spouse / Civil Partner?</label>
+            <select id="cgt-spousal" onchange="calcCGT()">
+              <option value="no">No</option>
+              <option value="yes">Yes (use both annual allowances)</option>
+            </select>
+          </div>
+          <div class="hbox hbox-teal" style="font-size:.78rem;margin-top:14px">
+            <strong>Tip:</strong> Transferring an asset to a spouse before sale is tax-free and lets you both use your £3,000 CGT allowances, potentially saving up to £1,440 in tax.
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Your Tax Bill</div>
+          <div id="cgt-results"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Rate Breakdown</div>
+          <div id="cgt-breakdown"></div>
+        </div>
+      </div>
+
+      <div class="export-bar"><button class="btn-excel" onclick="exportCGT()">⬇ Export to CSV/Excel</button></div>
+
+      <div class="card">
+        <div class="card-title">Strategies to Reduce CGT</div>
+        <div style="font-size:.86rem;color:var(--grey-light);line-height:1.7">
+          <p style="margin-bottom:8px"><strong style="color:var(--white)">Use your annual allowance.</strong> The first £3,000 of gains each tax year is tax-free. If you have a large gain, splitting the sale across two tax years can use two allowances.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--white)">Spousal transfer.</strong> Assets transferred between spouses or civil partners are tax-free, allowing both partners to use their £3,000 allowance.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--white)">Bed & ISA.</strong> Sell shares held outside an ISA, then immediately re-buy them inside an ISA. Future gains are tax-free.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--white)">Offset losses.</strong> Capital losses can be offset against gains in the same year, or carried forward indefinitely if registered with HMRC.</p>
+          <p><strong style="color:var(--white)">Pension contributions.</strong> Reducing your total income (via salary sacrifice or extra pension contributions) can keep more of your gain in the basic rate band, taxed at the lower rate.</p>
+        </div>
+      </div>
+
+      <div class="aff-section">
+        <h3>Reduce future CGT</h3>
+        <p>Investing inside an ISA or SIPP shelters all future gains from CGT.</p>
+        <div class="aff-grid">
+          <a href="https://www.trading212.com/invite/1Biw64Doig" target="_blank" rel="noopener" class="aff-card"><div class="aff-name">Trading 212 ISA</div><div class="aff-desc">All gains and dividends inside an ISA are tax-free, forever.</div><div class="aff-badge">→ Open free ISA</div></a>
+          <a href="https://www.ajbell.co.uk/sipp" target="_blank" rel="noopener" class="aff-card"><div class="aff-name">AJ Bell SIPP</div><div class="aff-desc">Pension contributions reduce taxable income and shelter gains.</div><div class="aff-badge">→ Open SIPP</div></a>
+        </div>
+      </div>
+
+      <div class="disc"><strong>Disclaimer:</strong> Estimates only based on standard CGT rates. Does not account for Business Asset Disposal Relief, Investors' Relief, or non-resident rules. Not tax advice. For complex situations consult an accountant.</div>
+    </div>
+
+
+    <!-- MORTGAGE OVERPAYMENT -->
+    <div class="panel" id="panel-overpay">
+      <div class="panel-heading">Mortgage Overpayment Calculator</div>
+      <p class="panel-sub">See how much interest you'll save and how many years you'll knock off your mortgage by overpaying.</p>
+
+      <div class="hbox hbox-blue" style="margin-bottom:20px;font-size:.85rem">
+        Overpaying your mortgage is one of the most powerful financial moves available. Even £100 a month extra can save tens of thousands in interest and clear years off your term. Most lenders allow 10% overpayment per year on a fixed deal without penalty. Always check your specific terms first.
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Your Mortgage Now</div>
+          <div class="field"><label>Outstanding Balance (£)</label><input type="number" id="op-balance" value="180000" min="0" oninput="calcOverpay()"></div>
+          <div class="field"><label>Current Monthly Payment (£)</label><input type="number" id="op-monthly" value="1100" min="0" oninput="calcOverpay()"></div>
+          <div class="field"><label>Interest Rate (%)</label><input type="number" id="op-rate" value="4.5" step="0.05" min="0" max="20" oninput="calcOverpay()"></div>
+          <div class="field"><label>Years Remaining</label><input type="number" id="op-years" value="22" min="1" max="40" oninput="calcOverpay()"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Your Overpayment Plan</div>
+          <div class="field"><label>Monthly Overpayment (£)</label><input type="number" id="op-extra" value="200" min="0" oninput="calcOverpay()"></div>
+          <div class="field"><label>One-off Lump Sum Now (£)</label><input type="number" id="op-lump" value="0" min="0" oninput="calcOverpay()"></div>
+          <div class="field"><label>Annual Bonus Overpayment (£)</label><input type="number" id="op-bonus" value="0" min="0" oninput="calcOverpay()"></div>
+          <div class="hbox hbox-teal" style="font-size:.78rem;margin-top:14px">
+            <strong>Tip:</strong> Most lenders allow up to 10% of your balance per year as overpayment without an Early Repayment Charge. £180,000 balance × 10% = £18,000/yr or £1,500/mo allowance.
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card" style="background:rgba(0,180,160,.05);border-color:rgba(0,180,160,.2)">
+          <div class="card-title">Without Overpayments</div>
+          <div id="op-baseline"></div>
+        </div>
+        <div class="card" style="background:rgba(155,127,232,.05);border-color:rgba(155,127,232,.2)">
+          <div class="card-title">With Overpayments</div>
+          <div id="op-overpay"></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:linear-gradient(135deg,rgba(0,180,160,.08),rgba(74,158,255,.05));border-color:rgba(0,180,160,.25)">
+        <div class="card-title">Your Savings</div>
+        <div id="op-savings"></div>
+      </div>
+
+      <div class="export-bar"><button class="btn-excel" onclick="exportOverpay()">⬇ Export to CSV/Excel</button></div>
+      <div class="card">
+        <div class="card-title">Balance Comparison Over Time</div>
+        <div class="chart-wrap" style="height:300px"><canvas id="overpayChart"></canvas></div>
+      </div>
+
+      <div class="aff-section">
+        <h3>Make sure you have the best deal</h3>
+        <p>Before overpaying, check that your interest rate is competitive. A small rate reduction can be worth as much as moderate overpayments.</p>
+        <div class="aff-grid">
+          <a href="https://www.habito.com/" target="_blank" rel="noopener" class="aff-card"><div class="aff-name">Habito</div><div class="aff-desc">Free online broker, scans every UK lender for the best deal.</div><div class="aff-badge">→ Free advice</div></a>
+          <a href="https://www.moneysavingexpert.com/mortgages/" target="_blank" rel="noopener" class="aff-card"><div class="aff-name">MSE Mortgage Guide</div><div class="aff-desc">Comprehensive guide to remortgaging and finding the cheapest deal.</div><div class="aff-badge">→ Read guide</div></a>
+        </div>
+      </div>
+
+      <div class="disc"><strong>Disclaimer:</strong> Estimates only. Always check your specific lender's overpayment rules and any Early Repayment Charges before making large overpayments. Not financial advice.</div>
+    </div>
+
+
+    <!-- METHODOLOGY -->
+    <div class="panel" id="panel-methodology">
+      <div class="panel-heading">Methodology &amp; Data Sources</div>
+      <p class="panel-sub">How each calculator works, the assumptions used, and the official sources behind the numbers.</p>
+
+      <div class="card">
+        <div class="card-title">General principles</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">All calculators are designed to give realistic estimates based on UK and Scottish tax rules and standard financial assumptions. Tax thresholds and rates are sourced from <a href="https://www.gov.uk" target="_blank" style="color:var(--teal)">gov.uk</a> and <a href="https://www.revenue.scot" target="_blank" style="color:var(--teal)">revenue.scot</a>. Pension scheme data comes from the Civil Service Pensions website at <a href="https://www.civilservicepensionscheme.org.uk" target="_blank" style="color:var(--teal)">civilservicepensionscheme.org.uk</a>.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">All projections assume constant rates and growth unless otherwise stated. Real-world outcomes will vary because tax bands change annually, investment returns are not constant, and personal circumstances evolve. Use these tools to inform your thinking, not to replace professional advice.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Income Tax (Scottish &amp; UK)</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">Scottish income tax bands 2025/26:</strong> Starter 19% (£12,571–£14,876), Basic 20% (£14,877–£26,561), Intermediate 21% (£26,562–£43,662), Higher 42% (£43,663–£75,000), Advanced 45% (£75,001–£125,140), Top 48% (£125,141+).</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">UK income tax bands 2025/26 (England, Wales, NI):</strong> Basic 20% (£12,571–£50,270), Higher 40% (£50,271–£125,140), Additional 45% (£125,141+).</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">Personal Allowance:</strong> £12,570 standard, tapered by £1 for every £2 of income over £100,000, fully removed at £125,140. Custom tax codes (including Scottish S-prefix) are supported.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7"><strong style="color:var(--white)">National Insurance 2025/26:</strong> Class 1 (employees) — 8% on £12,571–£50,270, 2% above. Class 4 (self-employed) — 6% on £12,571–£50,270, 2% above. Class 2 has been abolished from April 2024.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Capital Gains Tax</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">CGT is set by the UK government and applies across all four nations equally. The annual tax-free allowance for 2025/26 is £3,000.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7"><strong style="color:var(--white)">Rates from 30 October 2024:</strong> 18% (basic rate) and 24% (higher rate) on all asset types including shares, crypto, and residential property. The calculator stacks your gain on top of taxable income to determine which rate applies.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Stamp Duty / LBTT / LTT</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">Scotland (LBTT):</strong> Nil up to £145,000 (£175,000 first-time buyers), then 2%/5%/10%/12% in tiered bands. Additional Dwelling Supplement: 8% on second properties.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">England &amp; Northern Ireland (SDLT):</strong> Nil up to £125,000 (£300,000 first-time buyers), then 2%/5%/10%/12% in tiered bands. Higher rates surcharge: 5%.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7"><strong style="color:var(--white)">Wales (LTT):</strong> Nil up to £225,000, then 6%/7.5%/10%/12% in tiered bands. No first-time buyer relief in Wales. Higher rates surcharge: 5%.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mortgage Calculations</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">Standard amortisation formula: <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:3px;font-size:.85em">M = P × r(1+r)^n / ((1+r)^n - 1)</code> where M is monthly payment, P is principal, r is monthly rate, n is number of months.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">Affordability check uses 4.5x annual gross salary as a guideline. Real lender assessments vary and consider debts, dependants, expenses and credit history. The overpayment calculator simulates monthly amortisation with extra payments deducted from balance after interest accrues.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Civil Service Pension</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px"><strong style="color:var(--white)">Alpha:</strong> Career average, 1/43.1 accrual, NPA 67. <strong style="color:var(--white)">Nuvos:</strong> Career average, 1/43, NPA 65. <strong style="color:var(--white)">Classic:</strong> Final salary, 1/80 plus 3x lump sum, NPA 60. <strong style="color:var(--white)">Classic Plus:</strong> Hybrid pre/post 2002. <strong style="color:var(--white)">Premium:</strong> Final salary, 1/60, NPA 60.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">Early retirement reduction is approximately 5% per year before NPA (4.5% for Nuvos). Commutation at £12 lump sum per £1 of annual pension given up.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">Deferred pension calculator applies CPI revaluation between leaving date and draw date. Real-world revaluation varies annually and is set by the September CPI figure each year.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Investment Growth &amp; Pension Projections</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">Compound growth uses monthly compounding: balance grows by (1 + annual_rate/12) each month after monthly contribution is added. Dividend reinvestment assumes dividends compound at the same rate as growth.</p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">Sustainable retirement withdrawal rate set at 3.5% (slightly below the traditional 4% rule to account for sequence-of-returns risk and longer life expectancy). Real terms toggle adjusts projections by an assumed CPI inflation rate so figures are shown in today's purchasing power.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Budget Planner Rules</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7"><strong style="color:var(--white)">50/30/20:</strong> Elizabeth Warren's classic rule. Suits middle-to-higher incomes with manageable housing costs. <strong style="color:var(--white)">60/20/20:</strong> More realistic for high-cost areas where housing alone takes 40%+ of income. <strong style="color:var(--white)">70/20/10:</strong> Reflects tighter budgets where saving is constrained but still essential.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Limitations &amp; what's not covered</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7;margin-bottom:10px">These calculators do not currently model: <strong style="color:var(--white)">marriage allowance transfer, savings interest tax, dividend tax, the 60% effective marginal rate band between £100k and £125,140, Business Asset Disposal Relief, Inheritance Tax, sequence-of-returns risk in retirement, or Monte Carlo investment simulation.</strong></p>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">For complex situations involving these elements, please consult a qualified financial adviser, accountant, or tax specialist.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Update cycle</div>
+        <p style="color:var(--grey-light);font-size:.9rem;line-height:1.7">Tax bands and thresholds are reviewed and updated each April for the new tax year. Major changes to schemes (e.g. Civil Service Pension reforms) are reviewed when announced. Last comprehensive update: April 2026 for the 2026/27 tax year (where applicable).</p>
+      </div>
+
+    </div>
+
   </div><!-- end panels -->
 </div><!-- end main wrap -->
 
@@ -916,15 +1193,53 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
     <a href="https://chrisgage.org" target="_blank">About</a>
     <a onclick="showPanel('blog')">Blog</a>
     <a onclick="showPanel('about')">Contact</a>
+    <a onclick="showPanel('methodology')">Methodology</a>
     <a onclick="showPanel('privacy')">Privacy Policy</a>
   </div>
 </footer>
 
 <script>
+
+// ═══════════════════════════════════
+// PERSISTENT STORAGE (localStorage)
+// ═══════════════════════════════════
+// Auto-saves any input/select with an id, restores on page load
+const STORAGE_PREFIX = 'cg_finance_';
+
+function saveInput(el) {
+  if (!el || !el.id) return;
+  try {
+    localStorage.setItem(STORAGE_PREFIX + el.id, el.value);
+  } catch(e) { /* localStorage might be disabled */ }
+}
+
+function loadAllInputs() {
+  try {
+    document.querySelectorAll('input[id], select[id]').forEach(el => {
+      const saved = localStorage.getItem(STORAGE_PREFIX + el.id);
+      if (saved !== null && saved !== '') el.value = saved;
+    });
+  } catch(e) { /* localStorage might be disabled */ }
+}
+
+function clearAllInputs() {
+  if (!confirm('This will clear all your saved data on this site. Are you sure?')) return;
+  try {
+    Object.keys(localStorage).forEach(k => {
+      if (k.startsWith(STORAGE_PREFIX)) localStorage.removeItem(k);
+    });
+    location.reload();
+  } catch(e) {}
+}
+
+// Auto-save on any input change
+document.addEventListener('input', e => saveInput(e.target));
+document.addEventListener('change', e => saveInput(e.target));
+
 // ═══════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════
-const TOOLS = ['debt','invest','scot-tax','uk-tax','savings','mortgage','rentvbuy','emergency','pension','sacrifice','cspension','budget','deferred'];
+const TOOLS = ['debt','invest','scot-tax','uk-tax','savings','mortgage','rentvbuy','emergency','pension','sacrifice','cspension','budget','deferred','cgt','overpay'];
 
 function showPanel(name) {
   // hide/show hero
@@ -938,14 +1253,15 @@ function showPanel(name) {
     const el = document.getElementById('nav-'+n);
     if(el) el.classList.toggle('active', n === name);
   });
-  // show about/blog/privacy
+  // show about/blog/privacy/methodology
   document.getElementById('panel-about').classList.toggle('active', name === 'about');
   document.getElementById('panel-blog').classList.toggle('active', name === 'blog');
   document.getElementById('panel-privacy').classList.toggle('active', name === 'privacy');
+  document.getElementById('panel-methodology').classList.toggle('active', name === 'methodology');
   // show tool
   if(isTool) showTool(name);
   else TOOLS.forEach(t => document.getElementById('panel-'+t).classList.remove('active'));
-  document.getElementById('main-wrap').style.display = (name === 'about' || name === 'blog' || name === 'privacy' || isTool || isHome) ? 'grid' : 'none';
+  document.getElementById('main-wrap').style.display = (name === 'about' || name === 'blog' || name === 'privacy' || name === 'methodology' || isTool || isHome) ? 'grid' : 'none';
   if(isHome) showTool('debt');
   window.scrollTo({top: 0, behavior:'smooth'});
 }
@@ -959,6 +1275,7 @@ function showTool(name) {
   document.getElementById('panel-about').classList.remove('active');
   document.getElementById('panel-blog').classList.remove('active');
   document.getElementById('panel-privacy').classList.remove('active');
+  document.getElementById('panel-methodology').classList.remove('active');
   document.getElementById('hero-wrap').style.display = 'none';
   
   document.getElementById('mob-nav').style.display = 'flex';
@@ -1080,19 +1397,60 @@ function sb(label, value, cls='') { return `<div class="stat-box"><span class="s
 // ═══════════════════════════════════
 // TAX HELPERS
 // ═══════════════════════════════════
-const SCOT_BANDS = [
-  {name:'Starter',rate:.19,from:12570,to:14876,color:'#4fc3f7'},
-  {name:'Basic',rate:.20,from:14877,to:26561,color:'#29b6f6'},
-  {name:'Inter.',rate:.21,from:26562,to:43662,color:'#0288d1'},
-  {name:'Higher',rate:.42,from:43663,to:75000,color:'#0277bd'},
-  {name:'Adv.',rate:.45,from:75001,to:125140,color:'#01579b'},
-  {name:'Top',rate:.48,from:125141,to:Infinity,color:'#003d7a'},
-];
-const UK_BANDS = [
-  {name:'Basic',rate:.20,from:12570,to:50270,color:'#66bb6a'},
-  {name:'Higher',rate:.40,from:50271,to:125140,color:'#388e3c'},
-  {name:'Addl.',rate:.45,from:125141,to:Infinity,color:'#1b5e20'},
-];
+// Tax bands by year — easy to add new years here
+const TAX_YEARS = {
+  '2024_25': {
+    label: '2024/25',
+    scot: [
+      {name:'Starter',rate:.19,from:12570,to:14876,color:'#4fc3f7'},
+      {name:'Basic',rate:.20,from:14877,to:26561,color:'#29b6f6'},
+      {name:'Inter.',rate:.21,from:26562,to:43662,color:'#0288d1'},
+      {name:'Higher',rate:.42,from:43663,to:75000,color:'#0277bd'},
+      {name:'Adv.',rate:.45,from:75001,to:125140,color:'#01579b'},
+      {name:'Top',rate:.48,from:125141,to:Infinity,color:'#003d7a'},
+    ],
+    uk: [
+      {name:'Basic',rate:.20,from:12570,to:50270,color:'#66bb6a'},
+      {name:'Higher',rate:.40,from:50271,to:125140,color:'#388e3c'},
+      {name:'Addl.',rate:.45,from:125141,to:Infinity,color:'#1b5e20'},
+    ],
+    ni_lower: 12570, ni_upper: 50270, ni_main: 0.08, ni_upper_rate: 0.02,
+    ni_se_class2: 0, // abolished from 24/25
+    ni_se_class4_lower: 12570, ni_se_class4_upper: 50270,
+    ni_se_class4_main: 0.06, ni_se_class4_upper_rate: 0.02,
+    sl_plan1: 24990, sl_plan2: 27295, sl_plan4: 31395,
+  },
+  '2025_26': {
+    label: '2025/26',
+    scot: [
+      {name:'Starter',rate:.19,from:12570,to:14876,color:'#4fc3f7'},
+      {name:'Basic',rate:.20,from:14877,to:26561,color:'#29b6f6'},
+      {name:'Inter.',rate:.21,from:26562,to:43662,color:'#0288d1'},
+      {name:'Higher',rate:.42,from:43663,to:75000,color:'#0277bd'},
+      {name:'Adv.',rate:.45,from:75001,to:125140,color:'#01579b'},
+      {name:'Top',rate:.48,from:125141,to:Infinity,color:'#003d7a'},
+    ],
+    uk: [
+      {name:'Basic',rate:.20,from:12570,to:50270,color:'#66bb6a'},
+      {name:'Higher',rate:.40,from:50271,to:125140,color:'#388e3c'},
+      {name:'Addl.',rate:.45,from:125141,to:Infinity,color:'#1b5e20'},
+    ],
+    ni_lower: 12570, ni_upper: 50270, ni_main: 0.08, ni_upper_rate: 0.02,
+    ni_se_class2: 0,
+    ni_se_class4_lower: 12570, ni_se_class4_upper: 50270,
+    ni_se_class4_main: 0.06, ni_se_class4_upper_rate: 0.02,
+    sl_plan1: 26065, sl_plan2: 28470, sl_plan4: 32745,
+  },
+};
+
+function getTaxYear(prefix) {
+  const sel = document.getElementById(prefix + '-year');
+  return sel ? TAX_YEARS[sel.value] || TAX_YEARS['2025_26'] : TAX_YEARS['2025_26'];
+}
+
+// Maintain backward-compat globals (used by exportTax, calcSacrifice etc)
+let SCOT_BANDS = TAX_YEARS['2025_26'].scot;
+let UK_BANDS = TAX_YEARS['2025_26'].uk;
 
 function taxCodeAllowance(code) {
   // Parse tax code to personal allowance
@@ -1150,8 +1508,25 @@ function calcBands(gross, bands, overrideAllowance = null) {
   }
   return {tax, bd, taxable, allowance};
 }
-function calcNI(g){const lo=12570,hi=50270;if(g<=lo)return 0;return Math.min(g,hi)*0.08-lo*0.08+Math.max(0,g-hi)*0.02;}
-function sLoan(g,p){const th={plan1:24990,plan2:27295,plan4:31395};if(!th[p]||g<=th[p])return 0;return(g-th[p])*.09;}
+function calcNI(g, year, isSelfEmployed) {
+  year = year || TAX_YEARS['2025_26'];
+  if (isSelfEmployed) {
+    // Class 4 NI for self-employed
+    const lo = year.ni_se_class4_lower, hi = year.ni_se_class4_upper;
+    if (g <= lo) return 0;
+    return (Math.min(g, hi) - lo) * year.ni_se_class4_main + Math.max(0, g - hi) * year.ni_se_class4_upper_rate;
+  }
+  // Class 1 NI for employees
+  const lo = year.ni_lower, hi = year.ni_upper;
+  if (g <= lo) return 0;
+  return (Math.min(g, hi) - lo) * year.ni_main + Math.max(0, g - hi) * year.ni_upper_rate;
+}
+function sLoan(g, p, year) {
+  year = year || TAX_YEARS['2025_26'];
+  const th = { plan1: year.sl_plan1, plan2: year.sl_plan2, plan4: year.sl_plan4 };
+  if (!th[p] || g <= th[p]) return 0;
+  return (g - th[p]) * 0.09;
+}
 
 function renderTaxUI(gross, taxR, ni, loan, pension, preTax, postTax, div, sumId, barId, legId, bodyId) {
   const take=gross-taxR.tax-ni-loan-pension-postTax;
@@ -1242,6 +1617,8 @@ function calcInvest(){
   const divY=+document.getElementById('iv-div').value/100;
   const reinvest=document.getElementById('iv-reinvest').value==='yes';
   const years=+document.getElementById('iv-years').value;
+  const showReal=document.getElementById('iv-real') && document.getElementById('iv-real').value==='yes';
+  const inflation=(+document.getElementById('iv-inflation')?.value||2.5)/100;
   document.getElementById('iv-growth-lbl').textContent=document.getElementById('iv-growth').value+'%';
   document.getElementById('iv-years-lbl').textContent=document.getElementById('iv-years').value+'yr';
   const tr=reinvest?gr+divY:gr, mr=tr/12;
@@ -1249,11 +1626,19 @@ function calcInvest(){
   const bals=[start],cs=[start];
   for(let y=1;y<=years;y++){
     for(let m=0;m<12;m++){bal+=monthly;tc+=monthly;if(reinvest){bal*=(1+mr);}else{td+=bal*(divY/12);bal*=(1+gr/12);}}
-    bals.push(Math.round(bal));cs.push(Math.round(tc));
+    if(showReal){
+      const realFactor=Math.pow(1+inflation,y);
+      bals.push(Math.round(bal/realFactor));
+      cs.push(Math.round(tc/realFactor));
+    } else {
+      bals.push(Math.round(bal));
+      cs.push(Math.round(tc));
+    }
   }
   const fv=bals[years],gain=fv-tc,ad=reinvest?0:fv*divY;
+  const termsLabel = showReal ? "today's £" : "nominal £";
   document.getElementById('iv-stats').innerHTML=
-    ir('Final Value','<span style="color:var(--teal);font-size:1.1rem">£'+f(fv)+'</span>')+
+    ir('Final Value ('+termsLabel+')','<span style="color:var(--teal);font-size:1.1rem">£'+f(fv)+'</span>')+
     ir('Total Contributed','£'+f(tc))+
     ir('Investment Gains','<span style="color:var(--teal)">£'+f(gain)+'</span>')+
     (!reinvest?ir('Annual Dividend Income','<span style="color:var(--warm)">£'+f(ad)+'/yr</span>'):'') +
@@ -1277,18 +1662,19 @@ function calcScotTax(){
   const postTaxPer=(+document.getElementById('st-posttax').value||0);
   const preTax=preTaxPer*div;
   const postTax=postTaxPer*div;
-  // Update labels to reflect current period
+  const year = getTaxYear('st');
+  const isSE = document.getElementById('st-employment').value === 'self';
   const hint1='e.g. extra pension, cycle to work';
   const hint2='e.g. union fees, voluntary deductions';
   document.getElementById('st-pretax-lbl').innerHTML='Pre-Tax Deductions (£/'+periodLabel+') <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">'+hint1+'</span>';
   document.getElementById('st-posttax-lbl').innerHTML='Post-Tax Deductions (£/'+periodLabel+') <span style="font-size:.7rem;color:var(--grey);text-transform:none;letter-spacing:0">'+hint2+'</span>';
   const tg=Math.max(0,gross-pen-preTax);
-  const loan=sLoan(tg,document.getElementById('st-loan').value);
-  const ni=calcNI(tg);
+  const loan=sLoan(tg,document.getElementById('st-loan').value, year);
+  const ni=calcNI(tg, year, isSE);
   const tcRaw = document.getElementById('st-taxcode').value.trim();
   const tcAllowance = taxCodeAllowance(tcRaw);
-  const scot=calcBands(tg,SCOT_BANDS,tcAllowance);
-  const ruk=calcBands(tg,UK_BANDS,tcAllowance);
+  const scot=calcBands(tg,year.scot,tcAllowance);
+  const ruk=calcBands(tg,year.uk,tcAllowance);
   renderTaxUI(gross,scot,ni,loan,pen,preTax,postTax,div,'st-summary','st-bar','st-legend','st-bands');
   const scotTH=gross-scot.tax-ni-loan-pen-postTax;
   const rukTH=gross-ruk.tax-ni-loan-pen-postTax;
@@ -1351,6 +1737,42 @@ function calcSavings(){
 // 6. MORTGAGE
 // ═══════════════════════════════════
 let mgChart=null;
+function calcStampDuty(price, region, isFirstTimeBuyer, isAdditional) {
+  region = region || 'scotland';
+  if (price <= 0) return 0;
+  let tax = 0;
+  if (region === 'scotland') {
+    // LBTT 2025/26 — first-time buyer relief: nil-rate up to £175k
+    const ftbThreshold = isFirstTimeBuyer && price <= 175000 ? 175000 : 145000;
+    if (price > ftbThreshold) {
+      const bands = [[ftbThreshold, 250000, 0.02], [250000, 325000, 0.05], [325000, 750000, 0.10], [750000, Infinity, 0.12]];
+      for (const [lo, hi, r] of bands) {
+        if (price > lo) tax += (Math.min(price, hi) - lo) * r;
+      }
+    }
+    if (isAdditional) tax += price * 0.08; // Additional Dwelling Supplement
+  } else if (region === 'england') {
+    // SDLT 2025/26 — first-time buyer threshold £300k (relief on first £625k)
+    if (isFirstTimeBuyer && price <= 625000) {
+      if (price > 300000) tax += (Math.min(price, 500000) - 300000) * 0.05;
+    } else {
+      const bands = [[125000, 250000, 0.02], [250000, 925000, 0.05], [925000, 1500000, 0.10], [1500000, Infinity, 0.12]];
+      for (const [lo, hi, r] of bands) {
+        if (price > lo) tax += (Math.min(price, hi) - lo) * r;
+      }
+    }
+    if (isAdditional) tax += price * 0.05; // Higher rates surcharge
+  } else if (region === 'wales') {
+    // LTT 2025/26 — no first-time buyer relief
+    const bands = [[225000, 400000, 0.06], [400000, 750000, 0.075], [750000, 1500000, 0.10], [1500000, Infinity, 0.12]];
+    for (const [lo, hi, r] of bands) {
+      if (price > lo) tax += (Math.min(price, hi) - lo) * r;
+    }
+    if (isAdditional) tax += price * 0.05;
+  }
+  return Math.max(0, tax);
+}
+
 function calcMortgage(){
   const price=+document.getElementById('mg-price').value||0;
   const deposit=+document.getElementById('mg-deposit').value||0;
@@ -1365,16 +1787,18 @@ function calcMortgage(){
   const totalInt=totalPaid-principal;
   const ltv=principal/price*100;
   const aff=principal<=salary*4.5;
-  // LBTT Scotland
-  let lbtt=0;
-  if(price>145000){const bands=[[145000,250000,.02],[250000,325000,.05],[325000,750000,.1],[750000,Infinity,.12]];for(const[lo,hi,r]of bands){if(price>lo)lbtt+=(Math.min(price,hi)-lo)*r;}}
+  const region = document.getElementById('mg-region') ? document.getElementById('mg-region').value : 'scotland';
+  const isFTB = document.getElementById('mg-ftb') && document.getElementById('mg-ftb').value === 'yes';
+  const isAdditional = document.getElementById('mg-additional') && document.getElementById('mg-additional').value === 'yes';
+  const lbtt = calcStampDuty(price, region, isFTB, isAdditional);
+  const stampLabel = region === 'scotland' ? 'LBTT (Scotland)' : region === 'wales' ? 'LTT (Wales)' : 'Stamp Duty (England/NI)';
   document.getElementById('mg-results').innerHTML=
     ir('Monthly Payment','<span style="color:var(--teal);font-size:1.1rem">£'+f(mp)+'</span>')+
     ir('Loan Amount','£'+f(principal))+
     ir('LTV','<span style="color:'+(ltv>90?'var(--red)':ltv>80?'var(--warm)':'var(--teal)')+'">'+ltv.toFixed(1)+'%</span>')+
     ir('Total Interest','<span style="color:var(--red)">£'+f(totalInt)+'</span>')+
     ir('Total Cost','£'+f(totalPaid))+
-    ir('LBTT (Scotland)','<span style="color:var(--warm)">£'+f(lbtt)+'</span>')+
+    ir(stampLabel,'<span style="color:var(--warm)">£'+f(lbtt)+'</span>')+
     ir('Affordability (4.5x)','<span style="color:'+(aff?'var(--teal)':'var(--red)')+'">'+(aff?'✓ Within range':'✗ May be high')+'</span>');
   let rem=principal;
   const intD=[],prD=[];
@@ -1460,6 +1884,8 @@ function calcPension(){
   const targetInc=+document.getElementById('pp-target-income').value||20000;
   const state=document.getElementById('pp-state').value==='yes'?11502:0;
   const extraPension=+document.getElementById('pp-extra').value||0;
+  const showReal=document.getElementById('pp-real') && document.getElementById('pp-real').value==='yes';
+  const inflation=(+document.getElementById('pp-inflation')?.value||2.5)/100;
   const ytr=Math.max(0,retire-age);
   const mr=growth/12,tm=contrib+employer;
   let bal=pot;
@@ -1467,7 +1893,7 @@ function calcPension(){
   for(let y=0;y<ytr;y++){for(let m=0;m<12;m++){bal+=tm;bal*=(1+mr);}yb.push(Math.round(bal));}
   const fp=bal, annInc=fp*.035+state+extraPension, potNeeded=Math.max(0,(targetInc-state-extraPension)/.035), onTrack=fp>=potNeeded;
   document.getElementById('pp-results').innerHTML=
-    ir('Pot at Retirement','<span style="color:var(--teal);font-size:1.1rem">£'+f(fp)+'</span>')+
+    ir('Pot at Retirement ('+(showReal?"today's £":"nominal £")+')','<span style="color:var(--teal);font-size:1.1rem">£'+f(fp)+'</span>')+
     ir('Estimated Annual Income','<span style="color:'+(annInc>=targetInc?'var(--teal)':'var(--warm)')+'">£'+f(annInc)+'/yr</span>')+
     (state>0?ir('Incl. State Pension','£'+f(state)+'/yr'):'') +
     (extraPension>0?ir('Incl. Additional/CS Pension','£'+f(extraPension)+'/yr'):'') +
@@ -1491,10 +1917,11 @@ function calcSacrifice(){
   const evM=+document.getElementById('ss-ev').value||0;
   const penM=+document.getElementById('ss-pension').value||0;
   const ccM=+document.getElementById('ss-childcare').value||0;
-  const bands=region==='scot'?SCOT_BANDS:UK_BANDS;
+  const year=TAX_YEARS['2025_26'];
+  const bands=region==='scot'?year.scot:year.uk;
   const r1=calcBands(salary,bands).tax, r2=calcBands(salary+1,bands).tax;
   const mTax=r2-r1;
-  const mNI=salary>50270?.02:salary>12570?.08:0;
+  const mNI=salary>year.ni_upper?year.ni_upper_rate:salary>year.ni_lower?year.ni_main:0;
   const mSave=mTax+mNI;
   const bikeSave=bikeVal*mSave;
   const evAnn=evM*12, evSave=Math.max(0,evAnn*mSave-evAnn*.02*mTax);
@@ -1928,6 +2355,274 @@ function exportDeferred() {
   downloadCSV('deferred-cs-pension.csv', rows);
 }
 
+
+// ═══════════════════════════════════
+// CAPITAL GAINS TAX CALCULATOR
+// ═══════════════════════════════════
+const CGT_RATES = {
+  '2024_25': { allowance: 3000, basic_property: 0.18, higher_property: 0.24, basic_other: 0.10, higher_other: 0.20 },
+  '2025_26': { allowance: 3000, basic_property: 0.18, higher_property: 0.24, basic_other: 0.18, higher_other: 0.24 }, // From 30 Oct 2024 budget
+};
+
+function calcCGT() {
+  const buy = +document.getElementById('cgt-buy').value || 0;
+  const sell = +document.getElementById('cgt-sell').value || 0;
+  const costs = +document.getElementById('cgt-costs').value || 0;
+  const other = +document.getElementById('cgt-other').value || 0;
+  const losses = +document.getElementById('cgt-losses').value || 0;
+  const yr = document.getElementById('cgt-year').value;
+  const income = +document.getElementById('cgt-income').value || 0;
+  const asset = document.getElementById('cgt-asset').value;
+  const spousal = document.getElementById('cgt-spousal').value === 'yes';
+  const r = CGT_RATES[yr] || CGT_RATES['2025_26'];
+
+  const isProperty = asset === 'property';
+  const grossGain = sell - buy - costs;
+  const totalGains = Math.max(0, grossGain) + other;
+  const totalAfterLosses = Math.max(0, totalGains - losses);
+  const allowance = spousal ? r.allowance * 2 : r.allowance;
+  const taxableGain = Math.max(0, totalAfterLosses - allowance);
+
+  // CGT calc: gain stacks on top of income, basic-band portion taxed at lower rate
+  // Basic rate band ends at £50,270 for UK and Scotland (CGT uses UK threshold)
+  const basicBandTop = 50270;
+  const personalAllowance = 12570;
+  const taxableIncomeAfterPA = Math.max(0, income - personalAllowance);
+  const basicBandRemaining = Math.max(0, (basicBandTop - personalAllowance) - taxableIncomeAfterPA);
+
+  const lowerSlice = Math.min(taxableGain, basicBandRemaining);
+  const upperSlice = Math.max(0, taxableGain - lowerSlice);
+
+  const lowerRate = isProperty ? r.basic_property : r.basic_other;
+  const upperRate = isProperty ? r.higher_property : r.higher_other;
+  const taxLower = lowerSlice * lowerRate;
+  const taxUpper = upperSlice * upperRate;
+  const totalTax = taxLower + taxUpper;
+  const netGain = totalAfterLosses - totalTax;
+
+  // Display
+  document.getElementById('cgt-results').innerHTML =
+    ir('Sale Price', '£' + f(sell)) +
+    ir('Purchase Price', '<span style="color:var(--grey)">– £' + f(buy) + '</span>') +
+    ir('Allowable Costs', '<span style="color:var(--grey)">– £' + f(costs) + '</span>') +
+    ir('<strong>Gross Gain</strong>', '<span style="color:'+(grossGain>=0?'var(--teal)':'var(--red)')+'">£' + f(grossGain) + '</span>') +
+    (other > 0 ? ir('Other Gains This Year', '+£' + f(other)) : '') +
+    (losses > 0 ? ir('Losses Offset', '<span style="color:var(--teal)">– £' + f(losses) + '</span>') : '') +
+    ir('Annual CGT Allowance', '<span style="color:var(--teal)">– £' + f(allowance) + '</span>' + (spousal ? ' <span style="font-size:.72rem;color:var(--grey)">(2x for spousal)</span>' : '')) +
+    '<div style="height:1px;background:var(--border);margin:8px 0"></div>' +
+    ir('<strong>Taxable Gain</strong>', '<span style="color:'+(taxableGain>0?'var(--warm)':'var(--teal)')+'">£' + f(taxableGain) + '</span>') +
+    ir('<strong>CGT Owed</strong>', '<span style="color:var(--red);font-size:1.1rem">£' + f(Math.round(totalTax)) + '</span>') +
+    ir('<strong>Net Gain (after tax)</strong>', '<span style="color:var(--teal);font-size:1.1rem">£' + f(Math.round(netGain)) + '</span>') +
+    (taxableGain === 0 && totalAfterLosses > 0 ? '<div class="hbox hbox-teal" style="margin-top:10px;font-size:.78rem">Your gain is fully covered by the annual allowance — no CGT to pay.</div>' : '');
+
+  // Breakdown
+  let bdHtml = '';
+  if (taxableGain > 0) {
+    bdHtml += ir('Tax-free (annual allowance)', '<span style="color:var(--teal)">£' + f(allowance) + ' @ 0%</span>');
+    if (lowerSlice > 0) {
+      bdHtml += ir('Basic Rate Slice', '£' + f(Math.round(lowerSlice)) + ' @ ' + Math.round(lowerRate*100) + '%');
+    }
+    if (upperSlice > 0) {
+      bdHtml += ir('Higher Rate Slice', '£' + f(Math.round(upperSlice)) + ' @ ' + Math.round(upperRate*100) + '%');
+    }
+    bdHtml += '<div style="height:1px;background:var(--border);margin:8px 0"></div>';
+    bdHtml += ir('Total CGT Owed', '<span style="color:var(--red)">£' + f(Math.round(totalTax)) + '</span>');
+    bdHtml += ir('Effective Rate', (totalAfterLosses>0 ? (totalTax/totalAfterLosses*100).toFixed(1) : 0) + '%');
+    if (asset === 'property') {
+      bdHtml += '<div class="hbox hbox-warm" style="margin-top:10px;font-size:.78rem">Residential property gains are taxed at higher rates (18%/24%) and must be reported to HMRC within 60 days of sale.</div>';
+    } else if (asset === 'crypto') {
+      bdHtml += '<div class="hbox hbox-blue" style="margin-top:10px;font-size:.78rem">Each crypto disposal is a taxable event in the UK, including swaps between cryptocurrencies. Keep detailed records.</div>';
+    }
+  } else {
+    bdHtml = '<div class="hbox hbox-teal" style="font-size:.85rem">No CGT owed — your gain is below the annual allowance after losses.</div>';
+  }
+  document.getElementById('cgt-breakdown').innerHTML = bdHtml;
+}
+
+function exportCGT() {
+  const buy = +document.getElementById('cgt-buy').value || 0;
+  const sell = +document.getElementById('cgt-sell').value || 0;
+  const costs = +document.getElementById('cgt-costs').value || 0;
+  const other = +document.getElementById('cgt-other').value || 0;
+  const losses = +document.getElementById('cgt-losses').value || 0;
+  const yr = document.getElementById('cgt-year').value;
+  const income = +document.getElementById('cgt-income').value || 0;
+  const asset = document.getElementById('cgt-asset').value;
+  const spousal = document.getElementById('cgt-spousal').value === 'yes';
+  const r = CGT_RATES[yr] || CGT_RATES['2025_26'];
+  const isProperty = asset === 'property';
+  const grossGain = sell - buy - costs;
+  const totalGains = Math.max(0, grossGain) + other;
+  const totalAfterLosses = Math.max(0, totalGains - losses);
+  const allowance = spousal ? r.allowance * 2 : r.allowance;
+  const taxableGain = Math.max(0, totalAfterLosses - allowance);
+  const personalAllowance = 12570;
+  const basicBandTop = 50270;
+  const basicBandRemaining = Math.max(0, (basicBandTop - personalAllowance) - Math.max(0, income - personalAllowance));
+  const lowerSlice = Math.min(taxableGain, basicBandRemaining);
+  const upperSlice = Math.max(0, taxableGain - lowerSlice);
+  const lowerRate = isProperty ? r.basic_property : r.basic_other;
+  const upperRate = isProperty ? r.higher_property : r.higher_other;
+  const totalTax = lowerSlice * lowerRate + upperSlice * upperRate;
+
+  const rows = [
+    ['Chris Gage Finance Tools - Capital Gains Tax Export'],
+    ['Tax Year: ' + (yr === '2025_26' ? '2025/26' : '2024/25')],
+    [],
+    ['Asset Type', asset.charAt(0).toUpperCase() + asset.slice(1)],
+    ['Sale Price (£)', sell],
+    ['Purchase Price (£)', buy],
+    ['Allowable Costs (£)', costs],
+    ['Gross Gain (£)', grossGain],
+    ['Other Gains This Year (£)', other],
+    ['Losses Offset (£)', losses],
+    ['Annual Allowance (£)', allowance],
+    ['Taxable Gain (£)', Math.round(taxableGain)],
+    [],
+    ['Tax Calculation','Amount (£)','Rate'],
+    ['Tax-free allowance', Math.min(allowance, totalAfterLosses), '0%'],
+    ['Basic rate slice', Math.round(lowerSlice), (lowerRate*100)+'%'],
+    ['Higher rate slice', Math.round(upperSlice), (upperRate*100)+'%'],
+    ['Total CGT Owed', Math.round(totalTax), ''],
+    ['Net Gain (after tax)', Math.round(totalAfterLosses - totalTax), ''],
+  ];
+  downloadCSV('capital-gains-tax.csv', rows);
+}
+
+
+// ═══════════════════════════════════
+// MORTGAGE OVERPAYMENT
+// ═══════════════════════════════════
+let overpayChart = null;
+
+function simulateMortgage(balance, monthlyPayment, rate, lump, extraMonthly, bonusAnnual) {
+  let bal = Math.max(0, balance - lump);
+  const mr = rate / 12;
+  let months = 0;
+  let totalInterest = 0;
+  const balances = [Math.max(0, balance)];
+  while (bal > 0.01 && months < 600) {
+    months++;
+    const intPart = bal * mr;
+    totalInterest += intPart;
+    const principalPart = (monthlyPayment + extraMonthly) - intPart;
+    if (principalPart <= 0) break; // payment doesn't cover interest
+    bal = Math.max(0, bal - principalPart);
+    if (months % 12 === 0 && bonusAnnual > 0) bal = Math.max(0, bal - bonusAnnual);
+    balances.push(Math.round(bal));
+    if (bal <= 0) break;
+  }
+  return { months, totalInterest, balances };
+}
+
+function calcOverpay() {
+  const balance = +document.getElementById('op-balance').value || 0;
+  const monthly = +document.getElementById('op-monthly').value || 0;
+  const rate = (+document.getElementById('op-rate').value || 0) / 100;
+  const years = +document.getElementById('op-years').value || 25;
+  const extra = +document.getElementById('op-extra').value || 0;
+  const lump = +document.getElementById('op-lump').value || 0;
+  const bonus = +document.getElementById('op-bonus').value || 0;
+
+  const baseline = simulateMortgage(balance, monthly, rate, 0, 0, 0);
+  const withOver = simulateMortgage(balance, monthly, rate, lump, extra, bonus);
+
+  const baseY = Math.floor(baseline.months / 12), baseM = baseline.months % 12;
+  const overY = Math.floor(withOver.months / 12), overM = withOver.months % 12;
+  const monthsSaved = Math.max(0, baseline.months - withOver.months);
+  const yearsSaved = Math.floor(monthsSaved / 12), monthsSavedRem = monthsSaved % 12;
+  const interestSaved = Math.max(0, baseline.totalInterest - withOver.totalInterest);
+  const totalExtraPaid = lump + (extra * withOver.months) + (bonus * Math.floor(withOver.months / 12));
+
+  // Baseline display
+  document.getElementById('op-baseline').innerHTML =
+    ir('Total Time Remaining', baseY + 'yr ' + baseM + 'm') +
+    ir('Total Interest Paid', '<span style="color:var(--red)">£' + f(Math.round(baseline.totalInterest)) + '</span>') +
+    ir('Total Repaid', '£' + f(Math.round(balance + baseline.totalInterest)));
+
+  // With overpayment
+  document.getElementById('op-overpay').innerHTML =
+    ir('Total Time Remaining', '<span style="color:var(--teal)">' + overY + 'yr ' + overM + 'm</span>') +
+    ir('Total Interest Paid', '<span style="color:var(--teal)">£' + f(Math.round(withOver.totalInterest)) + '</span>') +
+    ir('Extra Paid (over base monthly)', '£' + f(Math.round(totalExtraPaid))) +
+    ir('Total Repaid', '£' + f(Math.round(balance + withOver.totalInterest)));
+
+  // Savings panel
+  document.getElementById('op-savings').innerHTML = `
+    <div class="g3" style="margin-top:6px">
+      ${sb('Time Saved', yearsSaved + 'y ' + monthsSavedRem + 'm', 'sv-teal')}
+      ${sb('Interest Saved', '£' + f(Math.round(interestSaved)), 'sv-teal')}
+      ${sb('Total Extra Paid', '£' + f(Math.round(totalExtraPaid)), '')}
+    </div>
+    <div class="hbox hbox-teal" style="margin-top:14px">
+      By overpaying ${extra > 0 ? '£' + f(extra) + '/month' : ''}${extra > 0 && lump > 0 ? ' plus ' : ''}${lump > 0 ? '£' + f(lump) + ' lump sum' : ''}${bonus > 0 ? (extra>0||lump>0?' and ':'') + '£' + f(bonus) + ' annually' : ''}, you'll be mortgage-free <strong>${yearsSaved>0?yearsSaved+'yr ':''}${monthsSavedRem}m earlier</strong> and save <strong>£${f(Math.round(interestSaved))} in interest</strong>.
+    </div>
+  `;
+
+  // Chart
+  if (overpayChart) overpayChart.destroy();
+  // Pad shorter dataset with zeros for clean comparison
+  const maxLen = Math.max(baseline.balances.length, withOver.balances.length);
+  const baseBals = [...baseline.balances, ...Array(maxLen - baseline.balances.length).fill(0)];
+  const overBals = [...withOver.balances, ...Array(maxLen - withOver.balances.length).fill(0)];
+  const labels = Array.from({length: maxLen}, (_, i) => i % 12 === 0 ? 'Yr ' + Math.floor(i/12) : '');
+
+  overpayChart = new Chart(document.getElementById('overpayChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Without Overpayments', data: baseBals, borderColor: '#7a90a4', backgroundColor: 'rgba(122,144,164,0.04)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+        { label: 'With Overpayments', data: overBals, borderColor: '#00b4a0', backgroundColor: 'rgba(0,180,160,0.08)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#7a90a4', boxWidth: 12 } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7a90a4', maxRotation: 0 } },
+        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#7a90a4', callback: v => '£' + f(v) } }
+      }
+    }
+  });
+}
+
+function exportOverpay() {
+  const balance = +document.getElementById('op-balance').value || 0;
+  const monthly = +document.getElementById('op-monthly').value || 0;
+  const rate = (+document.getElementById('op-rate').value || 0) / 100;
+  const extra = +document.getElementById('op-extra').value || 0;
+  const lump = +document.getElementById('op-lump').value || 0;
+  const bonus = +document.getElementById('op-bonus').value || 0;
+  const baseline = simulateMortgage(balance, monthly, rate, 0, 0, 0);
+  const withOver = simulateMortgage(balance, monthly, rate, lump, extra, bonus);
+
+  const rows = [
+    ['Chris Gage Finance Tools - Mortgage Overpayment Comparison'],
+    [],
+    ['Inputs'],
+    ['Outstanding Balance (£)', balance],
+    ['Current Monthly Payment (£)', monthly],
+    ['Interest Rate (%)', (rate * 100).toFixed(2)],
+    ['Monthly Overpayment (£)', extra],
+    ['Lump Sum (£)', lump],
+    ['Annual Bonus (£)', bonus],
+    [],
+    ['Comparison', 'Without Overpayments', 'With Overpayments', 'Saving'],
+    ['Total Months', baseline.months, withOver.months, baseline.months - withOver.months + ' months'],
+    ['Years', (baseline.months/12).toFixed(1), (withOver.months/12).toFixed(1), ((baseline.months-withOver.months)/12).toFixed(1)],
+    ['Total Interest (£)', Math.round(baseline.totalInterest), Math.round(withOver.totalInterest), Math.round(baseline.totalInterest - withOver.totalInterest)],
+    ['Total Cost (£)', Math.round(balance + baseline.totalInterest), Math.round(balance + withOver.totalInterest), Math.round(baseline.totalInterest - withOver.totalInterest)],
+    [],
+    ['Month','Balance Without Overpayments (£)','Balance With Overpayments (£)'],
+  ];
+  const maxLen = Math.max(baseline.balances.length, withOver.balances.length);
+  for (let i = 0; i < maxLen; i++) {
+    rows.push([i, baseline.balances[i] || 0, withOver.balances[i] || 0]);
+  }
+  downloadCSV('mortgage-overpayment.csv', rows);
+}
+
 // ═══════════════════════════════════
 // EXCEL EXPORT ENGINE
 // ═══════════════════════════════════
@@ -1999,15 +2694,20 @@ function exportTax(region) {
   const preTax=(+document.getElementById(prefix+'-pretax').value||0)*periodDiv;
   const postTax=(+document.getElementById(prefix+'-posttax').value||0)*periodDiv;
   const tg=Math.max(0,gross-pen-preTax);
-  const loan=sLoan(tg,document.getElementById(prefix+'-loan').value);
-  const ni=calcNI(tg);
-  const bands=region==='scot'?SCOT_BANDS:UK_BANDS;
+  const year = getTaxYear(prefix);
+  const isSE = document.getElementById(prefix+'-employment') && document.getElementById(prefix+'-employment').value === 'self';
+  const loan=sLoan(tg,document.getElementById(prefix+'-loan').value, year);
+  const ni=calcNI(tg, year, isSE);
+  const bands=region==='scot'?year.scot:year.uk;
   const tcExport = document.getElementById(prefix+'-taxcode') ? document.getElementById(prefix+'-taxcode').value.trim().toUpperCase() : '';
   const tcOverride = taxCodeAllowance(tcExport);
   const taxR=calcBands(tg,bands,tcOverride);
   const take=gross-taxR.tax-ni-loan-pen-postTax;
+  const yearLabel = year.label;
+  const employmentLabel = isSE ? 'Self-Employed' : 'Employed (PAYE)';
   const rows=[
     ['Chris Gage Finance Tools – '+(region==='scot'?'Scottish':'UK')+' Tax Export'],
+    ['Tax Year: ' + yearLabel + ' | Employment: ' + employmentLabel],
     [],
     ['Item','Annual (£)','Monthly (£)','Weekly (£)'],
     ['Tax Code', tcExport||'1257L (standard)', '', ''],
@@ -2135,9 +2835,10 @@ function exportSacrifice() {
   const evM=+document.getElementById('ss-ev').value||0;
   const penM=+document.getElementById('ss-pension').value||0;
   const ccM=+document.getElementById('ss-childcare').value||0;
-  const bands=region==='scot'?SCOT_BANDS:UK_BANDS;
+  const year=TAX_YEARS['2025_26'];
+  const bands=region==='scot'?year.scot:year.uk;
   const mTax=calcBands(salary+1,bands).tax-calcBands(salary,bands).tax;
-  const mNI=salary>50270?.02:salary>12570?.08:0;
+  const mNI=salary>year.ni_upper?year.ni_upper_rate:salary>year.ni_lower?year.ni_main:0;
   const mSave=mTax+mNI;
   const rows=[
     ['Chris Gage Finance Tools – Salary Sacrifice Summary'],
@@ -2500,6 +3201,7 @@ function exportCSPension() {
 // ═══════════════════════════════════
 // INIT
 // ═══════════════════════════════════
+loadAllInputs();
 renderDebtList();
 calcDebt();
 calcInvest();
@@ -2515,6 +3217,8 @@ calcCSPension();
 syncDeferredScheme();
 calcDeferred();
 calcBudget();
+calcCGT();
+calcOverpay();
 </script>
 </body>
 </html>
